@@ -26,7 +26,7 @@ public Menu(String name, Item... items) {
 		while(true) {
 			try {
 				displayMenu(io);
-				int itemNumber = io.readInt("Enter item number", "Wrong item number", 1, items.size());
+				int itemNumber = io.readInt("Enter item threadId", "Wrong item threadId", 1, items.size());
 				Item item = items.get(itemNumber - 1);
 				item.perform(io);
 				if(item.isExit()) {

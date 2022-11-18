@@ -1,5 +1,7 @@
 package telran.treadsRace;
 
+import java.util.stream.IntStream;
+
 import telran.view.*;
 
 public class ThreadsRaceAppl {
@@ -53,24 +55,32 @@ public class ThreadsRaceAppl {
 		}
 
 		ThreadsRace myThreads[] = new ThreadsRace[numbersOfThreads];
-		for (int j = 0; j < numbersOfThreads - 1; j++) {
-			myThreads[j] = new ThreadsRace(j + 1, distance);
-			myThreads[j].start();
-		}
+		IntStream.range(0, myThreads.length).forEach(i -> {
+			myThreads[i] = new ThreadsRace(i + 1, distance);
+			myThreads[i].start();
+		});
 
 		boolean finishMoument = true;
 
 		while (finishMoument) {
 
-			for (int i = 0; i < myThreads.length - 1; i++) {
+			for (int i = 0; i < myThreads.length; i++) {
+
 				if (!myThreads[i].isAlive()) {
-					io.writeLine("Congratulations to thread #" + i);
+					io.writeLine("Congratulations to thread #" + (i + 1));
 					finishMoument = false;
 					break;
 				}
 
 			}
 		}
+		IntStream.range(0, myThreads.length).forEach(i -> {
+			try {
+				myThreads[i].join();
+			} catch (InterruptedException e) {
+				throw new IllegalStateException();
+			}
+		});
 
 	}
 }
