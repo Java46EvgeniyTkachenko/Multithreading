@@ -1,5 +1,9 @@
 package telran.treadsRace;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+
 public class ThreadsRace extends Thread {
 
 	private static final int MAX_TIMEOUT = 5;
@@ -7,11 +11,14 @@ public class ThreadsRace extends Thread {
 	int threadId;
 	int distance;
 	int timeOut;
-
-	public ThreadsRace(int threadId, int distance) {
+	private static int num;
+	private Instant timeStart;
+	private static ArrayList<int[]> result = new ArrayList<int[]>(); 
+	public ThreadsRace(int threadId, int distance, Instant timeStart) {
 		super();
 		this.threadId = threadId;
 		this.distance = distance;
+		this.timeStart = timeStart;
 	}
 
 	@Override
@@ -28,7 +35,18 @@ public class ThreadsRace extends Thread {
 			}
 		}
 		
+		writeResult(threadId, timeStart);
 	}
-	
+
+	synchronized static private void writeResult(int numberThread, Instant timeS) {
+		int[] e = { ++num, numberThread, (int) ChronoUnit.MILLIS.between(timeS, Instant.now()) };
+
+		result.add(e);		
+
+	}
+
+	public static ArrayList<int[]> getResult() {
+		return result;
+	}
 
 }

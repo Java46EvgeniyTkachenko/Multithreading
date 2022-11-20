@@ -1,7 +1,7 @@
 package telran.treadsRace;
 
+import java.time.Instant;
 import java.util.stream.IntStream;
-
 import telran.view.*;
 
 public class ThreadsRaceAppl {
@@ -21,7 +21,6 @@ public class ThreadsRaceAppl {
 
 	private static Item[] getItems() {
 		Item items[] = {
-
 				Item.of("Numbers of threads", ThreadsRaceAppl::numbersOfThreads),
 				Item.of("Distance", ThreadsRaceAppl::distance), Item.of("Start the Race", ThreadsRaceAppl::startRace),
 				Item.exit() };
@@ -55,25 +54,13 @@ public class ThreadsRaceAppl {
 		}
 
 		ThreadsRace myThreads[] = new ThreadsRace[numbersOfThreads];
+		Instant timeStart = Instant.now();
 		IntStream.range(0, myThreads.length).forEach(i -> {
-			myThreads[i] = new ThreadsRace(i + 1, distance);
+			myThreads[i] = new ThreadsRace(i + 1, distance,timeStart);
 			myThreads[i].start();
 		});
+	
 
-		boolean finishMoument = true;
-
-		while (finishMoument) {
-
-			for (int i = 0; i < myThreads.length; i++) {
-
-				if (!myThreads[i].isAlive()) {
-					io.writeLine("Congratulations to thread #" + (i + 1));
-					finishMoument = false;
-					break;
-				}
-
-			}
-		}
 		IntStream.range(0, myThreads.length).forEach(i -> {
 			try {
 				myThreads[i].join();
@@ -81,6 +68,9 @@ public class ThreadsRaceAppl {
 				throw new IllegalStateException();
 			}
 		});
-
+		System.out.println("place  racer number  time");	
+		ThreadsRace.getResult().forEach(val ->{
+		       System.out.printf("  %d         %d        %d\n",val[0],val[1],val[2]);
+		        });
 	}
 }
